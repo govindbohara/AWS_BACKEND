@@ -1,0 +1,40 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+model User{
+id Int @id @default(autoincrement())
+name String
+email String @unique
+password String
+passwordResetToken String? @unique
+passwordResetExpires DateTime?
+role  Role @default(USER)
+documents Document[]
+
+}
+
+model Document{
+  id Int @id @default(autoincrement())
+  key String 
+  objectUrl String @default("")
+  user User @relation(fields: [createdBy], references: [id])
+  createdBy Int
+  createdAt DateTime @default(now())
+  orderNumber String @default("")
+}
+
+
